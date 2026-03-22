@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Profile App</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a2e;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 360px;
+    height: 720px;
+    background: #f5f5f5;
+    border-radius: 40px;
+    border: 8px solid #111;
+    box-shadow: 0 0 0 2px #333, 0 30px 80px rgba(0,0,0,0.6);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: #1565C0;
+    color: white;
+    font-size: 11px;
+    padding: 6px 20px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+  }
+
+  /* Action bar */
+  .action-bar {
+    background: #1565C0;
+    color: white;
+    padding: 14px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  /* Scroll content */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    background: #FAFAFA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 24px;
+    gap: 0;
+  }
+
+  /* Profile card */
+  .profile-card {
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Profile image */
+  .profile-img-wrap {
+    width: 110px;
+    height: 110px;
+    border-radius: 55px;
+    border: 4px solid #1565C0;
+    overflow: hidden;
+    background: #E3F2FD;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.25);
+  }
+
+  .profile-img-wrap svg {
+    width: 70px;
+    height: 70px;
+    opacity: 0.6;
+  }
+
+  .profile-label {
+    font-size: 11px;
+    color: #90CAF9;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: -8px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* Divider */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: #EEE;
+    margin: 2px 0;
+  }
+
+  /* Info rows */
+  .info-row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 4px;
+    border-bottom: 1px solid #F0F0F0;
+    animation: fadeSlide 0.5s ease both;
+  }
+
+  .info-row:last-of-type { border-bottom: none; }
+
+  .info-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1565C0;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .info-value {
+    font-size: 15px;
+    color: #212121;
+    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  /* Button */
+  .btn-show {
+    margin-top: 20px;
+    width: 100%;
+    padding: 14px;
+    background: #1565C0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 4px 14px rgba(21,101,192,0.35);
+  }
+
+  .btn-show:active {
+    background: #0D47A1;
+    transform: scale(0.98);
+  }
+
+  /* Toast */
+  .toast {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(33,33,33,0.92);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 22px;
+    font-size: 13px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .info-row:nth-child(1) { animation-delay: 0.1s; }
+  .info-row:nth-child(2) { animation-delay: 0.2s; }
+  .info-row:nth-child(3) { animation-delay: 0.3s; }
+  .info-row:nth-child(4) { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>▲ ● ■</span>
+  </div>
+
+  <!-- Action bar -->
+  <div class="action-bar">StudentProfileApplication</div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="profile-card">
+
+      <!-- Profile Photo -->
+      <div class="profile-img-wrap">
+        <svg viewBox="0 0 24 24" fill="#1565C0" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+        </svg>
+      </div>
+      <div class="profile-label">Profile Photo</div>
+
+      <div class="divider"></div>
+
+      <!-- Info rows -->
+      <div class="info-row">
+        <span class="info-label">Name</span>
+        <span class="info-value">G Banu Prakash Naidu</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">Roll Number</span>
+        <span class="info-value">A23126552207</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">Course</span>
+        <span class="info-value">CSM</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">Email</span>
+        <span class="info-value">banuprakashg@gmail.com</span>
+      </div>
+
+      <!-- Show Details Button -->
+      <button class="btn-show" onclick="showToast()">Show Details</button>
+
+    </div>
+  </div>
+
+  <!-- Toast message -->
+  <div class="toast" id="toast">Student Profile Details Displayed!</div>
+</div>
+
+<script>
+  let toastTimer;
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+</script>
+
+</body>
+</html>
